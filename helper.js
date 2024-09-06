@@ -1,6 +1,5 @@
 const moment = require('moment-timezone')
 const clone = require('rfdc/default')
-const http = require('http')
 const crypto = require('crypto')
 const { Packr } = require('msgpackr')
 const { parse, stringify } = require('flatted')
@@ -56,7 +55,7 @@ const shuffle = (ar) => {
     while (currentIndex != 0) {
         randomIndex = randint(currentIndex)
         currentIndex--
-        [ar[currentIndex], ar[randomIndex]] = [
+        ;[ar[currentIndex], ar[randomIndex]] = [
             ar[randomIndex],
             ar[currentIndex],
         ]
@@ -345,27 +344,6 @@ const sleep = async (msec) => {
     })
 }
 
-const healthCheck = async (host, port, timeout) => {
-    if (!timeout) timeout = 5000
-    const check = await new Promise((resolve) => {
-        http.get(
-            `http://${host}:${port}/health-check`,
-            { timeout: timeout },
-            (response) => {
-                let _data = ''
-                response.on('data', (_to_add) => {
-                    _data += _to_add
-                })
-
-                response.on('close', () => {
-                    return resolve(_data)
-                })
-            }
-        )
-    })
-    return promisify(check && check === 'OK')
-}
-
 const getPackr = (structure) => {
     opts = {
         useRecords: true,
@@ -521,7 +499,6 @@ module.exports = {
     promisify,
     promiseTimeout,
     sleep,
-    healthCheck,
     getPackr,
     prepPackrPackData,
     encryptCompat,
